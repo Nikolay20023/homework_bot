@@ -40,6 +40,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
+    """Отправляем сообщения."""
     if bot.send_message(TELEGRAM_CHAT_ID, message):
         logger.error('Ошибка в отправке сообщения.')
     else:
@@ -47,6 +48,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
+    """Запрашиваем ответ."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     response = requests.get(ENDPOINT, headers=HEADERS, params=params)
@@ -61,6 +63,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
+    """Делаем запросы."""
     if type(response) == str:
         error = 'Неверный тип возвращаемого результата'
         logger.error('Отсутвие ключей')
@@ -75,6 +78,7 @@ def check_response(response):
 
 
 def parse_status(homework):
+    """ВЫборка по ключам."""
     logger.info('Старт работы функции "parse_status()".')
     if 'homework_name' not in homework:
         error = 'Отсутвует ключ "homework_name" в homework.'
@@ -91,6 +95,7 @@ def parse_status(homework):
 
 
 def check_tokens():
+    """проверка переменных."""
     if not(PRACTICUM_TOKEN and TELEGRAM_TOKEN and TELEGRAM_CHAT_ID):
         logger.critical('Отсутствие обязательных переменных.')
         return False
