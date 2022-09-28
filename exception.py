@@ -26,3 +26,12 @@ class TroubleCheckToken(Error):
     def __init__(self, message="Не получен один из токенов ") -> None:
         self.message = message
         super().__init__(self.message)
+
+
+class TelegramError(Error):
+    """Вызывается когда не получено сообщение """
+
+    def __init__(self, message) -> None:
+        self.message = message
+        super().__init__(self.message)
+
