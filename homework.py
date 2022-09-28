@@ -17,10 +17,14 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    format=(
+        '%(asctime)s - [%(levelname)s] - '
+        '(%(filename)s).%(funcname)s:%(lineno)d - %(message)s'
+    ),
     filename="main.log",
     filemode='w',
-    level=logging.DEBUG
+    level=logging.INFO,
+    handlers=logging.StreamHandler(sys.stdout)
 )
 
 
@@ -94,16 +98,18 @@ def check_response(response):
     """Делаем запросы."""
     logging.info('Начало проверки запроса')
 
-    if type(response) != dict:
+    if isinstance(response, dict):
         logging.error('Неверный тип запроса')
-        raise TypeError
+        raise TypeError(
+            f'response = {response} не соответсвует типу dict.'
+        )
 
     if not(('homeworks' in response) and ('current_date' in response)):
         raise KeyError(
             'В ответе API отсутсвуют необходимые ключи "homeworks" и/или'
             f'"Current_date", response = {response}'
         )
-    if type(response['homeworks']) != list:
+    if isinstance(response['homeworks'], list):
         error = 'Неверный тип возвращаемого результата'
         logging.error('Отсутвие ключей')
         raise TypeError(error)
@@ -142,7 +148,7 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
-    if not(check_tokens)():
+    if not check_tokens():
         message = (
             'Отсутвуют обязательные переменные окружения: PRACTICUM_TOKEN,'
             'TELEGRAM_TOKEN, TELEGRAM_CHAD_ID,'
@@ -176,11 +182,6 @@ def main():
                 prev_report = current_report.copy
             else:
                 logging.debug('В ответе нет новых статусов')
-            response_list = check_response(response)
-            homework = response_list[0]
-            send_message(bot, parse_status(homework))
-            current_timestamp = int(time.time())
-            time.sleep(RETRY_TIME)
 
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
