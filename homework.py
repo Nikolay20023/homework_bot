@@ -98,7 +98,7 @@ def check_response(response):
     """Делаем запросы."""
     logging.info('Начало проверки запроса')
 
-    if isinstance(response, dict):
+    if not isinstance(response, dict):
         logging.error('Неверный тип запроса')
         raise TypeError(
             f'response = {response} не соответсвует типу dict.'
@@ -109,7 +109,7 @@ def check_response(response):
             'В ответе API отсутсвуют необходимые ключи "homeworks" и/или'
             f'"Current_date", response = {response}'
         )
-    if isinstance(response['homeworks'], list):
+    if not isinstance(response['homeworks'], list):
         error = 'Неверный тип возвращаемого результата'
         logging.error('Отсутвие ключей')
         raise TypeError(error)
