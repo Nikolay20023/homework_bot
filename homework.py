@@ -11,20 +11,22 @@ import telegram.error
 
 load_dotenv()
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 logging.basicConfig(
-    format=(
-        '%(asctime)s - [%(levelname)s] - '
-        '(%(filename)s).%(funcname)s:%(lineno)d - %(message)s'
-    ),
-    filename="main.log",
-    filemode='w',
     level=logging.INFO,
-    handlers=logging.StreamHandler(sys.stdout)
+    format=(
+        '%(asctime)s [%(levelname)s] - '
+        '(%(filename)s).%(funcName)s:%(lineno)d - %(message)s'
+    ),
+    handlers=[
+        logging.FileHandler(f'{BASE_DIR}/output.log'),
+        logging.StreamHandler(sys.stdout)
+    ]
 )
 
 
@@ -43,8 +45,8 @@ HOMEWORK_STATUSES = {
 def send_message(bot, message):
     """Отправляем сообщения."""
     try:
+        logging.info('Начало отправки сообщения.')
         bot.send_message(TELEGRAM_CHAT_ID, message)
-        logging.error('Ошибка в отправке сообщения.')
     except telegram.error.TelegramError as error:
         logging.error(f'Ошибка отправки сообщения telegram {error}')
         raise exception.TelegramError(
@@ -64,8 +66,8 @@ def get_api_answer(current_timestamp):
     }
     try:
         logging.info(
-            'Начинаем подключение к эндпоинту {url}, с параметрами'
-            'headers = {headers}, params = {params}'
+            'Начинаем подключение к эндпоинту {ENDPOINT}, с параметрами'
+            'headers = {HEADERS}, params = {params}'
         )
         response = requests.get(**request_params)
 
@@ -169,7 +171,7 @@ def main():
 
             if new_homework:
                 current_report['name'] = new_homework[0]['homework_name']
-                current_report['output'] = parse_status(new_homework[0])\
+                current_report['output'] = parse_status(new_homework[0])
 
             else:
                 current_report['output'] = (
