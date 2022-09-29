@@ -17,18 +17,6 @@ PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-logging.basicConfig(
-    level=logging.INFO,
-    format=(
-        '%(asctime)s [%(levelname)s] - '
-        '(%(filename)s).%(funcName)s:%(lineno)d - %(message)s'
-    ),
-    handlers=[
-        logging.FileHandler(f'{BASE_DIR}/output.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-
 
 RETRY_TIME = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
@@ -197,4 +185,15 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        level=logging.INFO,
+        format=(
+            '%(asctime)s [%(levelname)s] - '
+            '(%(filename)s).%(funcName)s:%(lineno)d - %(message)s'
+        ),
+        handlers=[
+            logging.FileHandler(f'{BASE_DIR}/output.log'),
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
     main()
